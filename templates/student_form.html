@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить студента</title>
+    <style>
+        /* Стили для тела документа */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        /* Стили для заголовка */
+        h1 {
+            color: #333;
+        }
+        /* Стили для формы */
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        /* Стили для меток */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        /* Стили для текстовых полей ввода */
+        input[type="text"], input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        /* Стили для кнопки */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        /* Стили для кнопки при наведении */
+        button:hover {
+            background-color: #45a049;
+        }
+        /* Стили для сообщений об успехе */
+        .success {
+            color: green;
+        }
+        /* Стили для сообщений об ошибке */
+        .error {
+            color: red;
+        }
+        /* Стили для блока навигационных ссылок */
+        .nav-links {
+            margin-top: 20px;
+        }
+        /* Стили для навигационных ссылок */
+        .nav-links a {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        /* Стили для навигационных ссылок при наведении */
+        .nav-links a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Заголовок страницы -->
+    <h1>Добавить студента</h1>
+
+    <!-- Блок для отображения сообщений об успехе или ошибке -->
+    {% if success %}
+        <p class="success">{{ message }}</p>
+    {% elif message %}
+        <p class="error">{{ message }}</p>
+    {% endif %}
+
+    <!-- Форма для добавления студента -->
+    <form method="post">
+        {% csrf_token %} <!-- Токен для защиты от CSRF-атак -->
+        {{ form.as_p }} <!-- Отображение формы с использованием Django шаблонов -->
+        <button type="submit">Сохранить</button> <!-- Кнопка для отправки формы -->
+    </form>
+
+    <!-- Блок с навигационными ссылками -->
+    <div class="nav-links">
+        <a href="{% url 'display_xml_data' %}">Просмотреть данные</a> <!-- Ссылка для просмотра данных -->
+        <a href="{% url 'manage_xml' %}">Управление XML файлом</a> <!-- Ссылка для управления XML файлом -->
+    </div>
+</body>
+</html>
+
+
+
