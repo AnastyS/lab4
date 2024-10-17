@@ -1,23 +1,28 @@
 <?xml version='1.0' encoding='utf-8'?>
 <data>
   <entry>
-    <name>Анастасия</name>
-    <subject>математика</subject>
-    <grade>3</grade>
-  </entry>
-  <entry>
-    <name>anasty</name>
-    <subject>математика</subject>
+    <name>Анастасия Самохвал</name>
+    <subject>английский</subject>
     <grade>5</grade>
   </entry>
   <entry>
     <name>Анастасия</name>
     <subject>английский</subject>
+    <grade>5</grade>
+  </entry>
+  <entry>
+    <name>Григорий</name>
+    <subject>русский</subject>
+    <grade>5</grade>
+  </entry>
+  <entry>
+    <name>Григорий</name>
+    <subject>русский</subject>
     <grade>2</grade>
   </entry>
   <entry>
-    <name>Анастасия</name>
+    <name>Григорий</name>
     <subject>английский</subject>
-    <grade>5</grade>
+    <grade>2</grade>
   </entry>
 </data>
