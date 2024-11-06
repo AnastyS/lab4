@@ -1,84 +1,11 @@
+{%load static%}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href='{% static 'css/style.css' %}'>
     <title>Управление XML файлом</title>
-    <style>
-        /* Стили для тела документа */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        /* Стили для заголовка */
-        h1 {
-            color: #333;
-        }
-        /* Стили для формы */
-        form {
-            background: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        /* Стили для меток */
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        /* Стили для поля загрузки файла */
-        input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        /* Стили для кнопки */
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        /* Стили для кнопки при наведении */
-        button:hover {
-            background-color: #45a049;
-        }
-        /* Стили для сообщений об успехе */
-        .success {
-            color: green;
-        }
-        /* Стили для сообщений об ошибке */
-        .error {
-            color: red;
-        }
-        /* Стили для блока навигационных ссылок */
-        .nav-links {
-            margin-top: 20px;
-        }
-        /* Стили для навигационных ссылок */
-        .nav-links a {
-            display: inline-block;
-            margin-right: 10px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        /* Стили для навигационных ссылок при наведении */
-        .nav-links a:hover {
-            background-color: #0056b3;
-        }
-    </style>
 </head>
 <body>
     <!-- Заголовок страницы -->

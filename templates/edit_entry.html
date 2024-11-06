@@ -1,0 +1,32 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href='{% static 'css/style.css' %}'>
+    <title>Редактирование данных</title>
+</head>
+<body>
+    <h1>Редактировать данные</h1>
+    
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Сохранить изменения</button>
+    {% if form.errors %}
+        <div class="error-messages">
+            <ul>
+                {% for field, errors in form.errors.items %} {% comment %} Проходим по всем полям и их ошибкам  {% endcomment %}
+                    <li>{{ errors|join:" " }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    </form>
+    
+    <div class="nav-links">
+        <a href="{% url 'display_db_data' %}">Назад к списку</a>
+    </div>
+</body>
+</html>

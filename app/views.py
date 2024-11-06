@@ -5,7 +5,11 @@ from .models import Student
 import os
 import xml.etree.ElementTree as ET
 import re
+from django.db import connection
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
+# Функция сохранения данных в XML файл (не изменялась)
 def create_or_update_xml_file(data):
     file_path = "performance.xml"
 
@@ -45,19 +49,37 @@ def create_or_update_xml_file(data):
         return True
     else:
         return False  # Указывает, что запись дублирующая
+    
+# Проверка на дубликаты в базе данных
+def check_for_duplicates_in_db(cleaned_data):
+    return Student.objects.filter(
+        name=cleaned_data['name'],
+        grade=cleaned_data['grade'],
+        subject=cleaned_data['subject'],
+    ).exists()
 
+# Основная логика обработки формы
 def student_form(request):
     form = Student_form()
     if request.method == 'POST':
         form = Student_form(request.POST)
         if form.is_valid():
-            form.save()  # сохраняем в БД
-            # Преобразуем данные в формат XML и дополняем существующий файл
-            added = create_or_update_xml_file(form.cleaned_data)
-            if added:
+           cleaned_data = form.cleaned_data
+
+           if request.POST.get('save_to') == 'database':
+               # Сохранение в базу данных
+               if check_for_duplicates_in_db(cleaned_data):
+                   return render(request, 'student_form.html', {'form': form, 'success': False, 'message': "Дублирующая запись"})
+               else:
+                form.save()  # Сохранение в базу данных
                 return render(request, 'student_form.html', {'form': form, 'success': True, 'message': "Запись добавлена"})
-            else:
-                return render(request, 'student_form.html', {'form': form, 'success': False, 'message': "Дублирующая запись"})
+           elif request.POST.get('save_to') == 'file':
+                # Преобразуем данные в формат XML и дополняем существующий файл
+                added = create_or_update_xml_file(form.cleaned_data)
+                if added:
+                        return render(request, 'student_form.html', {'form': form, 'success': True, 'message': "Запись добавлена"})
+                else:
+                        return render(request, 'student_form.html', {'form': form, 'success': False, 'message': "Дублирующая запись"})
 
     return render(request, 'student_form.html', {'form': form})
 
@@ -209,3 +231,90 @@ def manage_xml(request):
 
     return render(request, 'upload_download_xml.html', {'errors': errors, 'success_message': success_message})
 
+
+def display_db_data(request):
+    # Извлекаем все данные из БД
+    entries = Student.objects.all()
+
+    # Передаем данные в шаблон
+    return render(request, 'display_db_data.html', {'entries': entries})
+
+
+def clear_database(request):
+    if request.method == 'POST':
+        # Очищаем таблицу, выполняя SQL-запрос
+        with connection.cursor() as cursor:
+            cursor.execute("TRUNCATE TABLE app_examplemodel RESTART IDENTITY CASCADE")
+        return redirect('display_db_data')  # Возвращаемся на страницу с данными из БД
+    
+# Функция для удаления записи из базы данных
+def delete_entry(request, id):
+    # Получаем объект записи из базы данных по его идентификатору (id).
+    # Если запись не найдена, вызывается ошибка 404.
+    entry = get_object_or_404(Student, id=id)
+    
+    # Проверяем, если запрос был отправлен методом POST.
+    # Это обычно означает, что пользователь подтвердил удаление записи.
+    if request.method == 'POST':
+        # Удаляем запись из базы данных.
+        entry.delete()
+        # После удаления перенаправляем пользователя на страницу с отображением данных из базы.
+        return redirect('display_db_data')
+    
+    # Если запрос был GET (то есть страница загрузилась без подтверждения удаления),
+    # рендерим шаблон с подтверждением удаления.
+    return render(request)
+
+# Функция для редактирования записи в базе данных
+def edit_entry(request, id):
+    # Получаем объект записи по идентификатору (id) из базы данных.
+    # Если запись не найдена, вызывается ошибка 404.
+    entry = get_object_or_404(Student, id=id)
+    
+    # Если запрос был отправлен методом POST (это означает, что пользователь отправил форму с новыми данными),
+    if request.method == 'POST':
+        # Создаем форму, заполняя её данными, которые пришли с формы (request.POST),
+        # а также передаем текущую запись (instance=entry), чтобы редактировать существующую запись, а не создавать новую.
+        form = Student_form(request.POST, instance=entry)
+        
+        # Проверяем, корректна ли форма (валидна ли).
+        if form.is_valid():
+            # Если форма валидна, сохраняем изменения в базу данных.
+            form.save()
+            # После успешного редактирования перенаправляем пользователя на страницу с данными из базы.
+            return redirect('display_db_data')
+    else:
+        # Если запрос был методом GET (то есть пользователь только открыл страницу для редактирования),
+        # создаем форму, предварительно заполнив её данными из существующей записи (instance=entry).
+        form = Student_form(instance=entry)
+    
+    # Рендерим страницу для редактирования записи и передаем туда форму, а также объект записи.
+    return render(request, 'edit_entry.html', {'form': form, 'entry': entry})
+
+
+def search_entries(request):
+    # Получаем значение параметра 'query' из GET-запроса
+    # Если параметр отсутствует, присваиваем ему пустую строку
+    query = request.GET.get('query', '')
+    
+    # Фильтруем записи модели ExampleModel по трем полям:
+    # - name, subject и grade, используя __icontains, который ищет подстроку
+    # (регистронезависимый поиск)
+    results = Student.objects.filter(
+        name__icontains=query
+    ) | Student.objects.filter(
+        subject__icontains=query
+    ) | Student.objects.filter(
+        grade__icontains=query
+    )
+
+    # Преобразуем каждую запись в словарь, чтобы передать их в JSON-ответ
+    entries = [{
+        'id': entry.id,
+        'name': entry.name,
+        'subject': entry.subject,
+        'grade': entry.grade,
+    } for entry in results]
+
+    # Возвращаем данные в формате JSON, чтобы они были обработаны JavaScript на клиенте
+    return JsonResponse({'entries': entries})

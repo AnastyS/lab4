@@ -1,0 +1,150 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр данных из базы данных</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Стили для тела документа */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        /* Стили для заголовка */
+        h1 {
+            color: #333;
+        }
+        /* Стили для таблицы */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        /* Стили для ячеек таблицы */
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        /* Стили для заголовков таблицы */
+        th {
+            background-color: #f2f2f2;
+        }
+        /* Стили для сообщений об ошибке */
+        .error {
+            color: red;
+        }
+        /* Стили для блока навигационных ссылок */
+        .nav-links {
+            margin-top: 20px;
+        }
+        /* Стили для навигационных ссылок */
+        .nav-links a {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        /* Стили для навигационных ссылок при наведении */
+        .nav-links a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Просмотр данных из базы данных</h1>
+    <input type="text" id="search" placeholder="Поиск по имени, предмету или оценке" style="padding: 8px; width: 80%; max-width: 600px; margin-bottom: 20px;">
+
+    {% if entries %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Имя</th>
+                    <th>Предмет</th>
+                    <th>Оценка</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.name }}</td>
+                        <td>{{ entry.subject }}</td>
+                        <td>{{ entry.grade }}</td>
+                        <td>
+                            <!-- Кнопка редактирования -->
+                            <a href="{% url 'edit_entry' entry.id %}">
+                                <button class="btn btn-edit">Редактировать</button>
+                            </a>
+                            <!-- Кнопка удаления -->
+                            <form method="POST" action="{% url 'delete_entry' entry.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <p>Нет данных для отображения</p>
+    {% endif %}
+
+
+    <div class="nav-links">
+        <a href="{% url 'student_form' %}" class="btn-link">Назад к форме</a>
+    </div>
+
+    <script>
+        // Добавляем обработчик события 'input' к полю поиска
+        document.getElementById('search').addEventListener('input', function() {
+            // Получаем введенный пользователем текст из поля поиска
+            let query = this.value;
+    
+            // Проверяем, пустое ли поле поиска
+            if (query === '') {
+                // Если поле пустое, показываем оригинальные данные таблицы
+                window.location.reload(); // Перезагружаем страницу, чтобы показать оригинальные данные
+            } else {
+                // Выполняем AJAX-запрос для поиска
+                fetch(`/search/?query=${query}`)
+                    .then(response => response.json()) // Ожидаем ответ в формате JSON
+                    .then(data => {
+                        // Находим тело таблицы, в которое будем добавлять данные
+                        let tableBody = document.querySelector('table tbody');
+                        
+                        // Очищаем текущее содержимое таблицы перед добавлением новых данных
+                        tableBody.innerHTML = '';
+    
+                        // Проходим по каждому элементу в полученных данных и добавляем их в таблицу
+                        data.entries.forEach(entry => {
+                            // Для каждого элемента создаем строку (tr) с ячейками (td)
+                            tableBody.innerHTML += `
+                                <tr>
+                                    <td>${entry.name}</td> <!-- Имя -->
+                                    <td>${entry.subject}</td> <!-- Предмет -->
+                                    <td>${entry.grade}</td> <!-- Оценка -->
+                                    <td>
+                                        <!-- СКРЫТЫЕ КНОПКИ -->
+                                        <button class="btn btn-edit" disabled style="background-color: gray;">Редактировать</button>
+                                        <button class="btn" disabled style="background-color: gray;">Удалить</button>
+                                    </td>
+                                </tr>`;
+                        });
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
+
+
