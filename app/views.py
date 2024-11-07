@@ -11,7 +11,7 @@ from django.http import JsonResponse
 
 # Функция сохранения данных в XML файл (не изменялась)
 def create_or_update_xml_file(data):
-    file_path = "performance.xml"
+    file_path = "XMLfiles/performance.xml"
 
     # Проверяем, существует ли файл
     if os.path.exists(file_path):
@@ -84,7 +84,7 @@ def student_form(request):
     return render(request, 'student_form.html', {'form': form})
 
 def display_xml_data(request):
-    xml_file_path = 'performance.xml'  # Путь к XML-файлу
+    xml_file_path = 'XMLfiles/performance.xml'  # Путь к XML-файлу
     data = []
     errors = []  # Список для хранения ошибок
 
@@ -134,7 +134,7 @@ def display_xml_data(request):
 def manage_xml(request):
     errors = []  # Список для хранения сообщений об ошибках
     success_message = None  # Сообщение об успешном выполнении
-    file_path = "performance.xml"  # Путь к XML файлу
+    file_path = "XMLfiles/performance.xml"  # Путь к XML файлу
 
     # Регулярное выражение для проверки формата оценки
     grade_regex = re.compile(r'^[2-5]$')  # Регулярное выражение для проверки оценки (целое число)

@@ -10,19 +10,19 @@
 <body>
     <h1>Редактировать данные</h1>
     
-    <form method="POST">
+    <form method="POST" class="form">
         {% csrf_token %}
-        {{ form }}
+        {{ form }}<!-- Отображение полей формы -->
         <button type="submit">Сохранить изменения</button>
-    {% if form.errors %}
+    {% if form.errors %}<!-- Проверка наличия ошибок в форме -->
         <div class="error-messages">
             <ul>
                 {% for field, errors in form.errors.items %} {% comment %} Проходим по всем полям и их ошибкам  {% endcomment %}
-                    <li>{{ errors|join:" " }}</li>
+                    <li>{{ errors|join:" " }}</li><!-- Отображение ошибок для каждого поля -->
                 {% endfor %}
             </ul>
         </div>
-    {% endif %}
+    {% endif %}<!-- Конец проверки наличия ошибок -->
     </form>
     
     <div class="nav-links">

@@ -5,66 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Просмотр данных из базы данных</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <style>
-        /* Стили для тела документа */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        /* Стили для заголовка */
-        h1 {
-            color: #333;
-        }
-        /* Стили для таблицы */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        /* Стили для ячеек таблицы */
-        th, td {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: left;
-        }
-        /* Стили для заголовков таблицы */
-        th {
-            background-color: #f2f2f2;
-        }
-        /* Стили для сообщений об ошибке */
-        .error {
-            color: red;
-        }
-        /* Стили для блока навигационных ссылок */
-        .nav-links {
-            margin-top: 20px;
-        }
-        /* Стили для навигационных ссылок */
-        .nav-links a {
-            display: inline-block;
-            margin-right: 10px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        /* Стили для навигационных ссылок при наведении */
-        .nav-links a:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
     <h1>Просмотр данных из базы данных</h1>
     <input type="text" id="search" placeholder="Поиск по имени, предмету или оценке" style="padding: 8px; width: 80%; max-width: 600px; margin-bottom: 20px;">
 
-    {% if entries %}
+    {% if entries %}<!-- Проверка наличия данных для отображения -->
         <table>
             <thead>
                 <tr>
@@ -72,10 +20,10 @@
                     <th>Предмет</th>
                     <th>Оценка</th>
                     <th>Действия</th>
-                </tr>
+                </tr> 
             </thead>
             <tbody>
-                {% for entry in entries %}
+                {% for entry in entries %}<!-- Проход по всем записям -->
                     <tr>
                         <td>{{ entry.name }}</td>
                         <td>{{ entry.subject }}</td>
@@ -83,21 +31,21 @@
                         <td>
                             <!-- Кнопка редактирования -->
                             <a href="{% url 'edit_entry' entry.id %}">
-                                <button class="btn btn-edit">Редактировать</button>
+                                <button>Редактировать</button>
                             </a>
                             <!-- Кнопка удаления -->
                             <form method="POST" action="{% url 'delete_entry' entry.id %}" style="display:inline;">
                                 {% csrf_token %}
-                                <button type="submit" class="btn">Удалить</button>
+                                <button type="submit">Удалить</button>
                             </form>
                         </td>
                     </tr>
-                {% endfor %}
+                {% endfor %}<!-- Конец цикла по записям -->
             </tbody>
         </table>
-    {% else %}
+    {% else %}<!-- Если данных нет -->
     <p>Нет данных для отображения</p>
-    {% endif %}
+    {% endif %}<!-- Конец проверки наличия данных -->
 
 
     <div class="nav-links">

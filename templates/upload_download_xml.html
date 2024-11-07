@@ -26,7 +26,7 @@
     {% endif %}
 
     <!-- Форма для загрузки XML файла -->
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" class="form">
         {% csrf_token %} <!-- Токен для защиты от CSRF-атак -->
         <label for="upload">Загрузить XML файл:</label>
         <input type="file" name="upload" accept=".xml">
@@ -34,7 +34,7 @@
     </form>
 
     <!-- Форма для скачивания XML файла -->
-    <form method="get">
+    <form method="get" class="form">
         <button type="submit" name="download">Скачать XML файл</button>
     </form>
 

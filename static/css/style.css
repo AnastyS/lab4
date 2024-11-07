@@ -9,8 +9,7 @@ h1 {
     color: #333;
 }
 
-form {
-    background: #fff;
+.form {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -69,3 +68,25 @@ button:hover {
 .nav-links a:hover {
     background-color: #0056b3;
 }
+
+
+
+/* Стили для таблицы */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+/* Стили для ячеек таблицы */
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+/* Стили для заголовков таблицы */
+th {
+    background-color: #f2f2f2;
+}
+
+
+        
