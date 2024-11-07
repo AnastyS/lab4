@@ -5,9 +5,9 @@ from .models import Student
 import os
 import xml.etree.ElementTree as ET
 import re
-from django.db import connection
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
+from django.db import connection #соединение с бд
+from django.shortcuts import get_object_or_404 #получение объекта из бд по критериям
+from django.http import JsonResponse #возврат JSON ответов
 
 # Функция сохранения данных в XML файл (не изменялась)
 def create_or_update_xml_file(data):
@@ -73,6 +73,8 @@ def student_form(request):
                else:
                 form.save()  # Сохранение в базу данных
                 return render(request, 'student_form.html', {'form': form, 'success': True, 'message': "Запись добавлена"})
+               
+
            elif request.POST.get('save_to') == 'file':
                 # Преобразуем данные в формат XML и дополняем существующий файл
                 added = create_or_update_xml_file(form.cleaned_data)
@@ -239,13 +241,6 @@ def display_db_data(request):
     # Передаем данные в шаблон
     return render(request, 'display_db_data.html', {'entries': entries})
 
-
-def clear_database(request):
-    if request.method == 'POST':
-        # Очищаем таблицу, выполняя SQL-запрос
-        with connection.cursor() as cursor:
-            cursor.execute("TRUNCATE TABLE app_examplemodel RESTART IDENTITY CASCADE")
-        return redirect('display_db_data')  # Возвращаемся на страницу с данными из БД
     
 # Функция для удаления записи из базы данных
 def delete_entry(request, id):
